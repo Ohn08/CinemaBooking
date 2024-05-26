@@ -1,0 +1,22 @@
+{% extends 'base.html' %} {% block title %}Bookers | Booking Page{% endblock %}
+{% block content %}
+<section>
+  {% for show in shows %}
+  <li>
+    <img src="https://picsum.photos/400/200?random={{show.movie.id}}" /><br />
+    Movie: {{ show.movie.title }}<br />
+    Genre: {{ show.movie.genre }}<br />
+    Cinema: {{ show.cinema.name }}<br />
+    Location: {{ show.cinema.location }}<br />
+    Show Time: {{ show.show_time }}<br />
+    {% if show.is_showing %}
+    <strong>Currently Showing</strong><br />
+    <a href="{% url 'booking_form' show.id %}">Buy Ticket</a>
+    {% else %}
+    <strong>Not Showing</strong>
+    {% endif %}
+  </li>
+  <hr />
+  {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %} {% block title %}Bookers | {{ show.movie.title }} at
+{{ show.cinema.name }}{% endblock %} {% block content %}
+<section>
+  <h1>Booking for {{ show.movie.title }} at {{ show.cinema.name }}</h1>
+  <form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit">Book Ticket</button>
+  </form>
+</section>
+{% endblock %}

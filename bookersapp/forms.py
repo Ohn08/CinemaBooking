@@ -1,18 +1,11 @@
 from django import forms
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+from bookersapp.models import Booking, Payment
 
-class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField()
 
+class BookingForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        model = Booking
+        fields = ['seat_no', 'price']
 
-class AdminRegisterForm(UserCreationForm):
-    email = forms.EmailField()
-    phone_number = forms.CharField(max_length=15)
-
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
+    payment_method = forms.ChoiceField(choices=Payment.PAYMENT_CHOICES)
+    payment_amount = forms.DecimalField()
