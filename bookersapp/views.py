@@ -30,3 +30,8 @@ def booking_form(request, show_id):
 
 def home(request):
     return render(request, 'home.html')
+
+
+def home(request):
+    now_showing = Show.objects.filter(is_showing=True)
+    return render(request, 'home.html', {'now_showing': now_showing})

@@ -1,14 +1,41 @@
-{% extends "base.html" %} {% block content %}
-<section>
-  <h1>Welcome to Bookers</h1>
-  <a href={% url "booking" %}>Book Now</a>
-</section>
-<section>
-  <h2>About Us</h2>
-  <p>
-    Welcome to Bookers! We are your one-stop destination for all things related
-    to movies, cinema, and entertainment. Explore our website to discover the
-    latest movies, book tickets, and enjoy a seamless movie experience.
-  </p>
-</section>
-{% endblock content %}
+{% extends "base.html" %}
+
+{% block title %}
+Home - Bookers
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <section class="text-center">
+    <h1 class="display-4">Welcome to Bookers</h1>
+    <a class="btn btn-primary btn-lg mt-3" href="{% url 'booking' %}">Book Now</a>
+  </section>
+
+  
+  <main class="container mt-5">
+    {% block main_content %}
+    {% endblock %}
+
+    <!-- Now Showing Section -->
+    <section class="mt-5">
+        <h2 class="text-left">Now Showing</h2>
+        <hr/>
+        <div class="row">
+            {% for show in now_showing %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                   <img src="https://picsum.photos/400/200?random={{show.movie.id}}" class="rounded"/><br />
+                    <div class="card-body">
+                        <h5 class="card-title">{{ show.movie.title }}</h5>
+                        <p class="card-text">{{ show.movie.genre }}</p>
+                        <a href="{% url 'booking_form' show.id %}" class="btn btn-primary">Buy Ticket</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+
+</div>
+{% endblock %}

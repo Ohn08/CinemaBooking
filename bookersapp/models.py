@@ -1,5 +1,7 @@
 from django.db import models
-
+from django.urls import reverse
+from django.utils import timezone
+from datetime import timedelta
 
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -26,6 +28,8 @@ class Movie(BaseModel):
         upload_to='movies/', default='default.jpg', null=True, blank=True)
     trailer_link = models.URLField(
         default='https://example.com/default-trailer', null=True, blank=True)
+    def get_trailer_link(self):
+        return reverse('movie_trailer', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.title
@@ -36,6 +40,16 @@ class Show(BaseModel):
     movie = models.ForeignKey(Movie, on_delete=models.SET_NULL, null=True)
     show_time = models.DateTimeField(null=True)
     is_showing = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        current_time = timezone.now()
+        show_time = self.show_time
+        if show_time:
+            if current_time <= show_time <= current_time + timedelta(days=7):
+                self.is_showing = True
+            else:
+                self.is_showing = False
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.movie.title} at {self.cinema.name} on {self.show_time}"
