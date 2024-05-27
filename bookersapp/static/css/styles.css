@@ -10,8 +10,8 @@
 /*Header*/
 /* Header */
 header {
-    background-color: #f8f9fa; /* Change this to your desired color */
-    padding: 70px 0; /* Adjust the top and bottom padding */
+    background-color: #f8f9fa; 
+    padding: 70px 0; 
 }
 
 .navbar-nav .nav-item .nav-link {
@@ -22,18 +22,18 @@ header {
 .navbar-nav .nav-item .nav-link:focus,
 .navbar-nav .nav-item .nav-link:active,
 .navbar-nav .nav-item .nav-link.active {
-    background-color: #0f3424; /* Change this to your desired color */
+    background-color: #0f3424; 
     color: #fff;
 }
 
 header .navbar-brand img {
-    height: 40px; /* Adjust the height of the logo image */
+    height: 40px; 
 }
 
 header .navbar-brand {
     display: flex;
     align-items: center;
-    margin-right: 20px; /* Adjust the margin between the logo image and the brand name */
+    margin-right: 20px; 
 }
 
 header .navbar-brand a {
