@@ -1,13 +1,12 @@
-{% extends 'base.html' %} 
-{% load static %}
-{% block title %}
-Bookers | Booking Page
-{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% load static %} {% block title %} Bookers | Booking
+Page {% endblock %} {% block content %}
 <div class="container">
   <header class="text-center mb-4">
-    <img src="{% static 'image/logo.png' %}" class="img-fluid" style="max-height: 150px;">
+    <img
+      src="{% static 'image/logo.png' %}"
+      class="img-fluid"
+      style="max-height: 150px"
+    />
     <h1 class="display-4">BOOKERS</h1>
     <h6>Every Frame Tells a Story</h6>
   </header>
@@ -15,30 +14,30 @@ Bookers | Booking Page
   <section>
     <div class="now-showing-container mx-auto">
       <h2>Now Showing</h2>
-      <hr/>
-      {% for show in shows %}
-      {% if show.is_showing %}
+      <hr />
+      {% for show in shows %} {% if show.is_showing %}
       <div class="movie-container mb-4">
-        <img src="https://picsum.photos/400/200?random={{ show.movie.id }}" class="rounded"/><br />
+        <img src="{{ show.movie.image_url }}" class="rounded" /><br />
         <strong>Movie: {{ show.movie.title }}</strong><br />
+        {{ show.calculate_price }}<br />
         Genre: {{ show.movie.genre }}<br />
         Description: {{ show.movie.description }}<br />
         Cinema: {{ show.cinema.name }}<br />
         Location: {{ show.cinema.location }}<br />
         Show Time: {{ show.show_time }}<br />
-        <a href="{% url 'booking_form' show.id %}" class="btn btn-primary">Buy Ticket</a>
+        <a href="{% url 'booking_form' show.id %}" class="btn btn-primary"
+          >Buy Ticket</a
+        >
       </div>
       <hr />
-      {% endif %}
-      {% endfor %}
+      {% endif %} {% endfor %}
     </div>
     <div class="coming-soon-container mx-auto mt-5">
       <h2>Coming Soon</h2>
-      <hr/>
-      {% for show in shows %}
-      {% if not show.is_showing %}
+      <hr />
+      {% for show in shows %} {% if not show.is_showing %}
       <div class="movie-container mb-4">
-        <img src="https://picsum.photos/400/200?random={{ show.movie.id }}" /><br />
+        <img src="{{ show.movie.image_url }}" /><br />
         <strong>Movie: {{ show.movie.title }}</strong><br />
         Genre: {{ show.movie.genre }}<br />
         Description: {{ show.movie.description }}<br />
@@ -48,8 +47,7 @@ Bookers | Booking Page
         <a href="#" class="btn btn-secondary">More Info</a>
       </div>
       <hr />
-      {% endif %}
-      {% endfor %}
+      {% endif %} {% endfor %}
     </div>
   </section>
 </div>

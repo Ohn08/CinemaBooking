@@ -1,71 +1,70 @@
-import os
-from datetime import timedelta
-from django.utils import timezone
+import random
+from datetime import datetime, timedelta
 from django.core.management.base import BaseCommand
-from bookersapp.models import Cinema, Movie, Show, Payment, Booking
+from django.utils import timezone
+from bookersapp.models import Movie, Show, Cinema
+
 
 class Command(BaseCommand):
-    help = 'Create initial data for the database'
+    help = 'Populate the database with sample movies, cinemas, and shows'
 
     def handle(self, *args, **kwargs):
-        self.create_initial_data()
+        cinemas = [
+            {'name': 'Labsky Theaters',
+                'location': 'Puerto Princesa City', 'is_premium': True},
+            {'name': 'Manila Watchroom', 'location': 'Manila', 'is_premium': False},
+        ]
 
-    def create_initial_data(self):
-        # Create initial cinemas
-        cinema1 = Cinema.objects.create(name='Cinema One', location='123 Main St')
-        cinema2 = Cinema.objects.create(name='Cinema Two', location='456 Elm St')
+        for cinema_data in cinemas:
+            Cinema.objects.create(**cinema_data)
 
-        # Create initial movies
-        movie1 = Movie.objects.create(
-            title='Movie One',
-            description='Description for Movie One',
-            genre='Action',
-            release_date=timezone.now().date() - timedelta(days=10),
-            picture=None,
-            trailer_link='https://example.com/trailer1'
-        )
+        # Create sample movies
+        movies = [
+            {
+                'title': 'The Dark Knight',
+                'description': 'When the menace known as the Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham.',
+                'genre': 'Action',
+                'release_date': datetime(2008, 7, 18).date(),
+                'picture': None,
+                'trailer_link': 'https://www.youtube.com/watch?v=EXeTwQWrcwY',
+                'price': 299.99
+            },
+            {
+                'title': 'The Shawshank Redemption',
+                'description': 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
+                'genre': 'Drama',
+                'release_date': datetime(1994, 9, 23).date(),
+                'picture': None,
+                'trailer_link': 'https://www.youtube.com/watch?v=6hB3S9bIaco',
+                'price': 499.99
+            },
+            # Add more movies as needed
+        ]
 
-        movie2 = Movie.objects.create(
-            title='Movie Two',
-            description='Description for Movie Two',
-            genre='Comedy',
-            release_date=timezone.now().date() - timedelta(days=20),
-            picture=None,
-            trailer_link='https://example.com/trailer2'
-        )
+        for movie_data in movies:
+            Movie.objects.create(**movie_data)
 
-        # Create initial shows
-        show1 = Show.objects.create(
-            cinema=cinema1,
-            movie=movie1,
-            show_time=timezone.now() + timedelta(days=1),
-            is_showing=True
-        )
+        # Create sample shows
+        cinemas = Cinema.objects.all()
+        if not cinemas:
+            self.stdout.write(self.style.WARNING(
+                'No cinemas found. Please add some cinemas first.'))
+            return
 
-        show2 = Show.objects.create(
-            cinema=cinema2,
-            movie=movie2,
-            show_time=timezone.now() + timedelta(days=2),
-            is_showing=True
-        )
+        for cinema in cinemas:
+            for movie in Movie.objects.all():
+                show_time = timezone.now() + timedelta(days=random.randint(0, 10),
+                                                       hours=random.randint(0, 23))
+                show, created = Show.objects.get_or_create(
+                    cinema=cinema,
+                    movie=movie,
+                    defaults={
+                        'show_time': show_time,
+                    },
+                )
+                if created:
+                    self.stdout.write(self.style.SUCCESS(
+                        f'Successfully created show for {movie.title} at {cinema.name} on {show_time}'))
 
-        # Create initial payments
-        payment1 = Payment.objects.create(method='credit_card', amount=10.00)
-        payment2 = Payment.objects.create(method='cash', amount=15.00)
-
-        # Create initial bookings
-        booking1 = Booking.objects.create(
-            seat_no='A1',
-            show=show1,
-            price=12.00,
-            payment=payment1
-        )
-
-        booking2 = Booking.objects.create(
-            seat_no='B2',
-            show=show2,
-            price=10.00,
-            payment=payment2
-        )
-
-        self.stdout.write(self.style.SUCCESS('Initial data created successfully.'))
+        self.stdout.write(self.style.SUCCESS(
+            'Successfully populated the database with sample movies, cinemas, and shows'))

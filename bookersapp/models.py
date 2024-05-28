@@ -2,6 +2,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta
+from decimal import Decimal
+
 
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -14,6 +16,7 @@ class BaseModel(models.Model):
 class Cinema(BaseModel):
     name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
+    is_premium = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -28,8 +31,17 @@ class Movie(BaseModel):
         upload_to='movies/', default='default.jpg', null=True, blank=True)
     trailer_link = models.URLField(
         default='https://example.com/default-trailer', null=True, blank=True)
+    price = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0)  # Add price field
+
     def get_trailer_link(self):
         return reverse('movie_trailer', kwargs={'pk': self.pk})
+
+    @property
+    def image_url(self):
+        if self.picture and hasattr(self.picture, 'url'):
+            return self.picture.url
+        return "/media/movies/default.jpg"
 
     def __str__(self):
         return self.title
@@ -54,6 +66,19 @@ class Show(BaseModel):
     def __str__(self):
         return f"{self.movie.title} at {self.cinema.name} on {self.show_time}"
 
+    @property
+    def calculate_price(self):
+        # Add logic to calculate price based on movie and cinema
+        price = self.movie.price  # Start with movie price
+        # Adjust price based on cinema, if needed
+        # Example logic: Increase price by 15% if the cinema is a premium one
+        if self.cinema.is_premium:
+            print("Yes")
+            price *= Decimal(1.15)  # Increase price by 15%
+            price = round(price, 2)
+
+        return price
+
 
 class Payment(BaseModel):
     PAYMENT_CHOICES = [
@@ -72,10 +97,13 @@ class Payment(BaseModel):
 class Booking(BaseModel):
     seat_no = models.CharField(max_length=10)
     show = models.ForeignKey(Show, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0)  # Remove price field
     payment = models.ForeignKey(
         Payment, on_delete=models.CASCADE, null=True, blank=True)
     booking_date = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"Booking for {self.show.movie.title} - {self.seat_no} on {self.show.show_time}"
+    def save(self, *args, **kwargs):
+        if not self.pk:  # Only calculate price if it's a new booking
+            self.price = self.show.calculate_price
+        super().save(*args, **kwargs)

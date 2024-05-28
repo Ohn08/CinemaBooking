@@ -1,24 +1,27 @@
-{% extends 'base.html' %}
-{% block title %}
-Bookers | {{ show.movie.title }} at {{ show.cinema.name }}
-{% endblock %}
-{% block content %}
+{% extends 'base.html' %} 
+{% load crispy_forms_tags %} {% block title %} Bookers
+| {{ show.movie.title }} at {{ show.cinema.name }} {% endblock %} {% block content %}
 <div class="container">
-    <section>
-        <h1>Booking for {{ show.movie.title }} at {{ show.cinema.name }}</h1>
-        <div class="row">
-            <div class="col-md-6">
-                <img src="https://picsum.photos/400/200?random={{ show.movie.id }}" alt="{{ show.movie.title }}" class="img-fluid">
-                <p><strong>Synopsis: </strong> {{ show.movie.description }}</br>
-            </div>
-            <div class="col-md-6">
-                <form method="post">
-                    {% csrf_token %} 
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">Book Ticket</button>
-                </form>
-            </div>
-        </div>
-    </section>
+  <section>
+    <h1>Booking for {{ show.movie.title }} at {{ show.cinema.name }}</h1>
+    <div class="row">
+      <div class="col-md-6">
+        <img
+          src="{{ show.movie.image_url }}"
+          alt="{{ show.movie.title }}"
+          class="img-fluid"
+        />
+        <p><strong>Synopsis: </strong> {{ show.movie.description }}</p>
+      </div>
+      <div class="col-md-6">
+        <form method="post">
+          {% csrf_token %} {{ form|crispy }}
+          <button type="submit" class="btn btn-primary">
+            Book Ticket
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
 </div>
 {% endblock %}

@@ -1,41 +1,36 @@
-{% extends "base.html" %}
-
-{% block title %}
-Home - Bookers
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %} Home - Bookers {% endblock %}
+{%block content %}
 <div class="container">
   <section class="text-center">
     <h1 class="display-4">Welcome to Bookers</h1>
-    <a class="btn btn-primary btn-lg mt-3" href="{% url 'booking' %}">Book Now</a>
+    <a class="btn btn-primary btn-lg mt-3" href="{% url 'booking' %}"
+      >Book Now</a
+    >
   </section>
 
-  
-  <main class="container mt-5">
-    {% block main_content %}
-    {% endblock %}
-
+  <div class="container mt-5">
     <!-- Now Showing Section -->
     <section class="mt-5">
-        <h2 class="text-left">Now Showing</h2>
-        <hr/>
-        <div class="row">
-            {% for show in now_showing %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                   <img src="https://picsum.photos/400/200?random={{show.movie.id}}" class="rounded"/><br />
-                    <div class="card-body">
-                        <h5 class="card-title">{{ show.movie.title }}</h5>
-                        <p class="card-text">{{ show.movie.genre }}</p>
-                        <a href="{% url 'booking_form' show.id %}" class="btn btn-primary">Buy Ticket</a>
-                    </div>
-                </div>
+      <h2 class="text-left">Now Showing</h2>
+      <hr />
+      <div class="row">
+        {% for show in now_showing %}
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <img src="{{show.movie.image_url}}" class="rounded" /><br />
+            <div class="card-body">
+              <h5 class="card-title">{{ show.movie.title }}</h5>
+              {{ show.calculate_price }}<br />
+              <p class="card-text">{{ show.movie.genre }}</p>
+              <a href="{% url 'booking_form' show.id %}" class="btn btn-primary"
+                >Buy Ticket</a
+              >
             </div>
-            {% endfor %}
+          </div>
         </div>
+        {% endfor %}
+      </div>
     </section>
-</main>
-
+  </div>
 </div>
 {% endblock %}

@@ -1,0 +1,60 @@
+<!-- booked_tickets.html -->
+
+{% extends 'base.html' %} {% block title %} Booked Tickets {% endblock %}
+{% block content %}
+<div class="container">
+  <h1>Booked Tickets</h1>
+  <div class="row">
+    {% for booking in bookings %}
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">{{ booking.show.movie.title }}</h5>
+          <p class="card-text">Seat No: {{ booking.seat_no }}</p>
+          <p class="card-text">Booking Date: {{ booking.booking_date }}</p>
+          <!-- Add other booking details as needed -->
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% if is_paginated %}
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page=1">&laquo; First</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}"
+          >Previous</a
+        >
+      </li>
+      {% endif %} {% for num in page_obj.paginator.page_range %} 
+      {% if page_obj.number == num %}
+      <li class="page-item active" aria-current="page">
+        <span class="page-link"
+          >{{ num }} <span class="sr-only">(current)</span></span
+        >
+      </li>
+      {% else %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+      </li>
+      {% endif %} {% endfor %} {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}"
+          >Next</a
+        >
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"
+          >Last &raquo;</a
+        >
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+</div>
+{% endblock %}
